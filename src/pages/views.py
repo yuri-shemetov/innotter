@@ -1,21 +1,21 @@
 from rest_framework import viewsets
-from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from .serializers import PageSerializer
 from .models import Page
 
-# from posts.mixins import PostMixin
-
 class PageModelViewSet(viewsets.ModelViewSet):
-    "Pages"
+    "Allowed Pages for everybody categories"
     serializer_class = PageSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = Page.objects.all()
 
-    def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
     def get_queryset(self):
         user = self.request.user
         if user.is_staff:
             return Page.objects.all()
         elif user.is_authenticated:
-            return Page.objects.filter(owner=user)
+            owner_pages = Page.objects.filter(owner=user)
+            another_pages = Page.objects.filter(is_private=False)
+            return owner_pages.union(another_pages).order_by('-updated_at')
+        else:
+            return Page.objects.filter(is_private=False)
