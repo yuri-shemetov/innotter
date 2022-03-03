@@ -1,36 +1,40 @@
-from django.contrib.contenttypes.models import ContentType
 from .models import Like
 from users.models import User
+
 
 def add_like(obj, user):
     """Liked the `obj`.
     """
-    obj_type = ContentType.objects.get_for_model(obj)
+
     like, is_created = Like.objects.get_or_create(
-        content_type=obj_type, object_id=obj.id, user=user)
+        user=user, post=obj)
     return like
 
 def remove_like(obj, user):
     """Removed 'like' the `obj`.
     """
-    obj_type = ContentType.objects.get_for_model(obj)
+
     Like.objects.filter(
-        content_type=obj_type, object_id=obj.id, user=user
+        user=user, post=obj
     ).delete()
 
 def is_fan(obj, user):
     """Check user's like the `obj`.
     """
+
     if not user.is_authenticated:
         return False
-    obj_type = ContentType.objects.get_for_model(obj)
+
     likes = Like.objects.filter(
-        content_type=obj_type, object_id=obj.id, user=user)
+        user=user, post=obj)
     return likes.exists()
     
 def get_fans(obj):
     """Get a list of users who liked `obj`.
     """
-    obj_type = ContentType.objects.get_for_model(obj)
-    return User.objects.filter(
-        likes__content_type=obj_type, likes__object_id=obj.id)
+    return User.objects.filter(likes__post=obj)
+
+def get_count_fans(obj):
+    """Get a count of users who liked `obj`.
+    """
+    return User.objects.filter(likes__post=obj).count()

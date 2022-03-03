@@ -4,6 +4,8 @@ from .serializers import PostSerializer
 from .models import Post
 from pages.models import Page
 from likes.mixins import LikedMixin
+from django.db.models import Q
+
 
 class PostModelViewSet(LikedMixin, viewsets.ModelViewSet):
     "Posts"
@@ -16,9 +18,7 @@ class PostModelViewSet(LikedMixin, viewsets.ModelViewSet):
         if user.is_staff:
             return Post.objects.all()
         elif user.is_authenticated:
-            owner_pages = Page.objects.filter(owner=user)
-            another_pages = Page.objects.filter(is_private=False)
-            permissions_pages = [i for i in owner_pages.union(another_pages)]
+            permissions_pages = [i for i in Page.objects.filter(Q(owner=user)|Q(is_private=False))]
             return Post.objects.filter(page__in=permissions_pages)
         else:
             permissions_pages = [i for i in Page.objects.filter(is_private=False)]
