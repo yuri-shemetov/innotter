@@ -1,8 +1,8 @@
 from .views import PostModelViewSet
 from rest_framework.routers import DefaultRouter
 
-app_name = 'posts'
 
+app_name = 'posts'
 # Create router and Registration ViewSet
 router = DefaultRouter()
 router.register(r'', PostModelViewSet, basename='posts')

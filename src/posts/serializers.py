@@ -6,6 +6,7 @@ from likes import services as likes_services
 class PostSerializer(serializers.ModelSerializer):
     is_fan = serializers.SerializerMethodField()
     total_likes = serializers.SerializerMethodField()
+
     class Meta:
         model = Post
         fields = ('id', 'page', 'content', 'is_fan', 'total_likes',)

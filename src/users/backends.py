@@ -1,5 +1,4 @@
 import jwt
-
 from rest_framework import authentication, exceptions
 from .models import User
 from proj.settings import SECRET_KEY
@@ -39,15 +38,12 @@ class JWTAuthentication(authentication.BaseAuthentication):
         except Exception:
             msg = 'Invalid authentication. Could not decode token.'
             raise exceptions.AuthenticationFailed(msg)
-
         try:
             user = User.objects.get(pk=payload['id'])
         except User.DoesNotExist:
             msg = 'No user matching this token was found.'
             raise exceptions.AuthenticationFailed(msg)
-
         if not user.is_active:
             msg = 'This user has been deactivated.'
             raise exceptions.AuthenticationFailed(msg)
-
         return (user, token)

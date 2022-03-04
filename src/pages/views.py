@@ -16,6 +16,8 @@ class PageModelViewSet(viewsets.ModelViewSet):
         if user.is_staff:
             return Page.objects.all()
         elif user.is_authenticated:
-            return Page.objects.filter(Q(owner=user) | Q(is_private=False)).order_by('-updated_at')
+            return Page.objects.filter(
+                Q(owner=user) | Q(is_private=False)
+            ).order_by('-updated_at')
         else:
             return Page.objects.filter(is_private=False)

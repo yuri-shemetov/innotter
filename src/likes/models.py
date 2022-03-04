@@ -9,6 +9,6 @@ class Like(models.Model):
         on_delete=models.CASCADE
     )
     post = models.ForeignKey(
-        'posts.Post', 
+        'posts.Post',
         on_delete=models.CASCADE
     )
