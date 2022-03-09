@@ -26,7 +26,7 @@ class SubscriberModelViewSet(viewsets.ModelViewSet):
                     Q(follower=page) | Q(follow_requests=page)
                 )
 
-    @action(detail=True, methods=['POST', 'GET'])
+    @action(detail=True, methods=['POST'])
     def confirm(self, request, pk=None):
         """Confirm for one user to `obj`.
         """
@@ -41,7 +41,7 @@ class SubscriberModelViewSet(viewsets.ModelViewSet):
             ).delete()
         return Response()
 
-    @action(detail=True, methods=['POST', 'GET'])
+    @action(detail=True, methods=['POST'])
     def unconfirm(self, request, pk=None):
         """Unconfirm for one user to `obj`.
         """

@@ -5,7 +5,7 @@ from .serializers import SubscriberUserSerializer
 
 
 class SubscribersMixin:
-    @action(detail=True, methods=['POST', 'GET'])
+    @action(detail=True, methods=['POST'])
     def subscribes(self, request, pk=None):
         """Subscribes to `obj`.
         """
@@ -13,7 +13,7 @@ class SubscribersMixin:
         services.add_subscription(obj, request.user)
         return Response()
 
-    @action(detail=True, methods=['POST', 'GET'])
+    @action(detail=True, methods=['POST'])
     def unsubscribes(self, request, pk=None):
         """Remove 'subscribers' from `obj`.
         """
@@ -39,7 +39,7 @@ class SubscribersMixin:
         serializer = SubscriberUserSerializer(subscribers, many=True)
         return Response(serializer.data)
 
-    @action(detail=True, methods=['POST', 'GET'])
+    @action(detail=True, methods=['POST'])
     def confirm(self, request, pk=None):
         """Confirm for everybody to `obj`.
         """
