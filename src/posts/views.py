@@ -3,12 +3,13 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from .serializers import PostSerializer
 from .models import Post
 from pages.models import Page
+from subscribers.models import Subscriber
 from likes.mixins import LikedMixin
 from django.db.models import Q
 
 
 class PostModelViewSet(LikedMixin, viewsets.ModelViewSet):
-    "Posts"
+    """Allowed Posts for everybody categories"""
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
@@ -19,13 +20,8 @@ class PostModelViewSet(LikedMixin, viewsets.ModelViewSet):
             return Post.objects.all()
         elif user.is_authenticated:
             permissions_pages = [
-                i for i in Page.objects.filter(
-                    Q(owner=user) | Q(is_private=False)
-                    )
-            ]
-            return Post.objects.filter(page__in=permissions_pages)
-        else:
-            permissions_pages = [
-                i for i in Page.objects.filter(is_private=False)
+                i for i in Page.objects.all() if Subscriber.objects.filter(
+                    Q(subscriber=user) & Q(follower=i)
+                )
             ]
             return Post.objects.filter(page__in=permissions_pages)

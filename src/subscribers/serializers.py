@@ -1,8 +1,9 @@
 from rest_framework import serializers
 from users.models import User
+from .models import Subscriber
 
 
-class SubscriberSerializer(serializers.ModelSerializer):
+class SubscriberUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
@@ -10,4 +11,15 @@ class SubscriberSerializer(serializers.ModelSerializer):
             'id',
             'username',
             'email',
+        ]
+
+
+class SubscriberSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Subscriber
+        fields = [
+            'id',
+            'subscriber',
+            'follower',
+            'follow_requests',
         ]

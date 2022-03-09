@@ -1,7 +1,7 @@
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from . import services
-from .serializers import SubscriberSerializer
+from .serializers import SubscriberUserSerializer
 
 
 class SubscribersMixin:
@@ -27,7 +27,7 @@ class SubscribersMixin:
         """
         obj = self.get_object()
         follow_requests = services.get_follow_requests(obj)
-        serializer = SubscriberSerializer(follow_requests, many=True)
+        serializer = SubscriberUserSerializer(follow_requests, many=True)
         return Response(serializer.data)
 
     @action(detail=True, methods=['GET'])
@@ -36,7 +36,7 @@ class SubscribersMixin:
         """
         obj = self.get_object()
         subscribers = services.get_subscribers(obj)
-        serializer = SubscriberSerializer(subscribers, many=True)
+        serializer = SubscriberUserSerializer(subscribers, many=True)
         return Response(serializer.data)
 
     @action(detail=True, methods=['POST', 'GET'])
@@ -46,11 +46,3 @@ class SubscribersMixin:
         obj = self.get_object()
         services.confirm_subscription_everybody(obj, request.user)
         return Response()
-
-    # @action(detail=True, methods=['POST', 'GET'])
-    # def confirm_one(self, request, pk=None):
-    #     """Confirm for one user to `obj`.
-    #     """
-    #     obj = self.get_object()
-    #     services.confirm_subscription_one_user(obj, request.user, pk)
-    #     return Response()
