@@ -22,7 +22,8 @@ class Page(models.Model):
         on_delete=models.CASCADE,
         related_name='pages'
     )
-    image = models.URLField(
+    image = models.FileField(
+        max_length=30,
         null=True,
         blank=True
     )

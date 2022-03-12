@@ -3,11 +3,11 @@ from rest_framework.test import APITestCase
 
 
 class UserProfileTestCase(APITestCase):
-    profile_url = 'http://127.0.0.1:8000/api/user-update/'
+    profile_url = '/api/users/user-update/'
 
     def setUp(self):
-        url_auth = 'http://127.0.0.1:8000/api/registration/'
-        url_login = 'http://127.0.0.1:8000/api/login/'
+        url_auth = '/api/users/registration/'
+        url_login = '/api/users/login/'
 
         self.user = self.client.post(url_auth, data={
             'username': 'dummy',

@@ -10,5 +10,6 @@ class Like(models.Model):
     )
     post = models.ForeignKey(
         'posts.Post',
+        related_name='like_post',
         on_delete=models.CASCADE
     )
