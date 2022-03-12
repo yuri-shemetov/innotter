@@ -1,15 +1,16 @@
 from django.db import models
 import uuid
 
+
 class Page(models.Model):
     id = models.UUIDField(
-        primary_key=True, 
-        default=uuid.uuid4, 
+        primary_key=True,
+        default=uuid.uuid4,
         editable=False
     )
     owner = models.ForeignKey(
-        'users.User', 
-        on_delete=models.CASCADE, 
+        'users.User',
+        on_delete=models.CASCADE,
         related_name='pages'
     )
     name = models.CharField(
@@ -18,30 +19,30 @@ class Page(models.Model):
     description = models.TextField()
     tag = models.ForeignKey(
         'tags.Tag',
-        on_delete=models.CASCADE, 
+        on_delete=models.CASCADE,
         related_name='pages'
     )
     image = models.URLField(
-        null=True, 
+        null=True,
         blank=True
     )
     is_private = models.BooleanField(
         default=False
     )
     followers = models.ManyToManyField(
-        'users.User', 
+        'users.User',
         related_name='follows'
     )
     follow_requests = models.ManyToManyField(
-        'users.User', 
+        'users.User',
         related_name='requests'
     )
     unblock_date = models.DateTimeField(
-        null=True, 
+        null=True,
         blank=True
     )
     created_at = models.DateTimeField(
-        auto_now_add=True, 
+        auto_now_add=True,
         auto_now=False,
     )
     updated_at = models.DateTimeField(

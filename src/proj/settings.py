@@ -56,7 +56,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'proj.urls'
+ROOT_URLCONF = 'proj.urls.base'
 
 TEMPLATES = [
     {
@@ -135,10 +135,7 @@ AUTH_USER_MODEL = 'users.User'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        # 'rest_framework.authentication.BasicAuthentication',
-        # 'rest_framework.authentication.SessionAuthentication',    
         'users.backends.JWTAuthentication',
-  
         ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAdminUser',
@@ -148,5 +145,4 @@ REST_FRAMEWORK = {
     'EXCEPTION_HANDLER': 'proj.exceptions.core_exception_handler',
     'NON_FIELD_ERRORS_KEY': 'error',
     'TEST_REQUEST_DEFAULT_FORMAT': 'json',
-
 }

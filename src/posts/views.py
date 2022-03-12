@@ -1,23 +1,31 @@
 from rest_framework import viewsets
-from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from .serializers import PostSerializer
 from .models import Post
 from pages.models import Page
-class PostModelViewSet(viewsets.ModelViewSet):
+from likes.mixins import LikedMixin
+from django.db.models import Q
+
+
+class PostModelViewSet(LikedMixin, viewsets.ModelViewSet):
     "Posts"
+    queryset = Post.objects.all()
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
-    queryset = Post.objects.all()
 
-    def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
     def get_queryset(self):
         user = self.request.user
         if user.is_staff:
             return Post.objects.all()
         elif user.is_authenticated:
-            page = Page.objects.filter(owner=user)
-            post_for_me=[]
-            for i in page:
-                post_for_me += Post.objects.filter(page=i)
-            return post_for_me
+            permissions_pages = [
+                i for i in Page.objects.filter(
+                    Q(owner=user) | Q(is_private=False)
+                    )
+            ]
+            return Post.objects.filter(page__in=permissions_pages)
+        else:
+            permissions_pages = [
+                i for i in Page.objects.filter(is_private=False)
+            ]
+            return Post.objects.filter(page__in=permissions_pages)
