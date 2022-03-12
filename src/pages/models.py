@@ -29,14 +29,6 @@ class Page(models.Model):
     is_private = models.BooleanField(
         default=False
     )
-    followers = models.ManyToManyField(
-        'users.User',
-        related_name='follows'
-    )
-    follow_requests = models.ManyToManyField(
-        'users.User',
-        related_name='requests'
-    )
     unblock_date = models.DateTimeField(
         null=True,
         blank=True
