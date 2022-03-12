@@ -7,6 +7,7 @@ from rest_framework.decorators import action
 from users.models import User
 from pages.models import Page
 from rest_framework.response import Response
+from . tasks import send_letter_email
 
 
 class SubscriberModelViewSet(viewsets.ModelViewSet):
@@ -35,6 +36,7 @@ class SubscriberModelViewSet(viewsets.ModelViewSet):
             one_user = User.objects.get(pk=subscribers.subscriber.id)
             subscription, is_created = Subscriber.objects.get_or_create(
                 subscriber=one_user, follower=subscribers.follow_requests)
+            send_letter_email.delay(subscribers.subscriber.email, subscribers.follow_requests.name) # CELERY
             Subscriber.objects.filter(
                 subscriber=one_user,
                 follow_requests=subscribers.follow_requests

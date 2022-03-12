@@ -165,3 +165,20 @@ REST_FRAMEWORK = {
     'NON_FIELD_ERRORS_KEY': 'error',
     'TEST_REQUEST_DEFAULT_FORMAT': 'json',
 }
+
+# EMAIL: SES-SMTP-MY-TRIAL
+
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'email-smtp.eu-west-2.amazonaws.com'
+EMAIL_HOST_USER = local_settings.SMTP_Username
+EMAIL_HOST_PASSWORD = local_settings.SMTP_Password
+EMAIL_PORT = 587
+
+# RabbitMQ
+
+CELERY_BROKER_URL = 'amqp://localhost:5672//'
+# CELERY_BROKER_TRANSPORT_OPTIONS = {'visibility_timeout':3600}
+CELERY_RESULT_BACKEND = 'db+sqlite:///results.db'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
