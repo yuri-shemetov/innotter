@@ -21,20 +21,17 @@ def add_subscription(obj, user):
 
 
 def confirm_subscription_everybody(obj, user):
-    if user.is_authenticated and Page.objects.filter(id=obj.id, owner=user):
+    if user.is_authenticated and Page.objects.filter(owner=user).exists():
         follow_requests = User.objects.filter(subscribers__follow_requests=obj)
-        for everybody in follow_requests:
-            subscription, is_created = Subscriber.objects.get_or_create(
-                subscriber=everybody, follower=obj)
-            Subscriber.objects.filter(
-                subscriber=everybody, follow_requests=obj).delete()
+        for one_user in follow_requests:
+            subscription = Subscriber.objects.filter(subscriber=one_user).update(follower=obj, follow_requests=None)
             return subscription
 
 
 def remove_subscription(obj, user):
     """Removed 'subscription' on the `obj`.
     """
-    if user.is_authenticated and Page.objects.filter(id=obj.id, owner=user):
+    if user.is_authenticated and Page.objects.filter(owner=user).exists():
         Subscriber.objects.filter(follower=obj).delete()
     elif user.is_authenticated:
         Subscriber.objects.filter(subscriber=user, follower=obj).delete()

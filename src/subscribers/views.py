@@ -34,13 +34,8 @@ class SubscriberModelViewSet(viewsets.ModelViewSet):
         subscribers = self.get_object()
         if request.user.is_authenticated and Page.objects.filter(owner=request.user):
             one_user = User.objects.get(pk=subscribers.subscriber.id)
-            subscription, is_created = Subscriber.objects.get_or_create(
-                subscriber=one_user, follower=subscribers.follow_requests)
+            Subscriber.objects.filter(subscriber=one_user).update(follower=subscribers.follow_requests, follow_requests=None)
             send_letter_email.delay(subscribers.subscriber.email, subscribers.follow_requests.name) # CELERY
-            Subscriber.objects.filter(
-                subscriber=one_user,
-                follow_requests=subscribers.follow_requests
-            ).delete()
         return Response()
 
     @action(detail=True, methods=['POST'])
