@@ -4,6 +4,7 @@ from .serializers import PageSerializer
 from .models import Page
 from subscribers.mixins import SubscribersMixin
 from users.models import User
+from rest_framework.response import Response
 
 
 class PageModelViewSet(SubscribersMixin, viewsets.ModelViewSet):
