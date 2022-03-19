@@ -42,7 +42,7 @@ class PageSerializer(serializers.ModelSerializer):
         """
         user = self.context.get('request').user
         return subscribers_services.is_follow_requests(obj, user)
-
+# -------------------------------------------->
     def get_followers(self, obj) -> int:
         """Count `followers` from `request.user` for (`obj`).
         """

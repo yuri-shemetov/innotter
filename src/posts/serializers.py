@@ -5,7 +5,6 @@ from likes import services as likes_services
 
 class PostSerializer(serializers.ModelSerializer):
     is_fan = serializers.SerializerMethodField()
-    total_likes = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
@@ -16,8 +15,3 @@ class PostSerializer(serializers.ModelSerializer):
         """
         user = self.context.get('request').user
         return likes_services.is_fan(obj, user)
-
-    def get_total_likes(self, obj) -> int:
-        """Count `like` from `request.user` for (`obj`).
-        """
-        return likes_services.get_count_fans(obj)
