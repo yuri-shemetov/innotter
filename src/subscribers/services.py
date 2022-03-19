@@ -1,6 +1,7 @@
 from .models import Subscriber
 from pages.models import Page
 from users.models import User
+from .producer import follower
 
 
 def add_subscription(obj, user):
@@ -48,7 +49,7 @@ def get_subscribers(obj):
     """
     return User.objects.filter(subscribers__follower=obj)
 
-
+# ------------------------------------------------------>
 def get_count_follow_requests(obj):
     """Get a count of users who requested subscribtion on the `obj`.
     """
@@ -58,9 +59,10 @@ def get_count_follow_requests(obj):
 def get_count_subscribers(obj):
     """Get a count of users who subscribed on the `obj`.
     """
+    follower()
     return User.objects.filter(subscribers__follower=obj).count()
 
-
+# ------------------------------------------------------>
 def is_subscriber(obj, user):
     """Check user is subscriber on the `obj`.
     """
