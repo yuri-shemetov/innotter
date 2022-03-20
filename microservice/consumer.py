@@ -15,14 +15,10 @@ def callback(ch, method, properties, body):
     print(data)
 
     if properties.content_type == 'page_created':
-        page = {
-            'page': data['id'],
-            'counters': {
-                'count_follower': data['followers'],
-                'count_follow_requests':  data['follow_requests']
-            }
-        }
-        db_manager.add_counter(page)
+        page = data['id']
+        count_follower = data['followers']
+        count_follow_requests = data['follow_requests']
+        db_manager.add_counter(page, count_follow_requests, count_follower)
     
     elif properties.content_type == 'page_updated':
         page = data['id']
@@ -31,8 +27,7 @@ def callback(ch, method, properties, body):
         db_manager.update_counter(page, count_follow_requests, count_follower)
 
     elif properties.content_type == 'page_deleted':
-        page = data['id'],
-        db_manager.delete_counter(page)
+        db_manager.delete_counter(data)
 
 channel.basic_consume(queue='microservice', on_message_callback=callback, auto_ack=True)
 

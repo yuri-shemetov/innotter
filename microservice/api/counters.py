@@ -11,7 +11,8 @@ async def read_counter(page: str = Path(..., description='Search the page')):
 
 @counters.post('/', status_code=201)
 async def add_counter(payload: CounterIn):
-    counter_id = db_manager.add_counter(payload)
+    counter_id = db_manager.add_counter(
+        payload.page, payload.count_follow_requests, payload.count_follower)
     response = {
         'id': counter_id,
         'page': payload.page,

@@ -1,5 +1,5 @@
 from rest_framework import viewsets, filters, status
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from .serializers import PageSerializer
 from .models import Page
 from subscribers.mixins import SubscribersMixin
@@ -11,7 +11,7 @@ from subscribers.producer import follower
 class PageModelViewSet(SubscribersMixin, viewsets.ModelViewSet):
     """Allowed Pages for everybody categories"""
     serializer_class = PageSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = Page.objects.all()
     filter_backends = [filters.SearchFilter]
     search_fields = ['name', 'id', 'tag__name']
@@ -27,6 +27,7 @@ class PageModelViewSet(SubscribersMixin, viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        serializer.save(owner=request.user)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         follower('page_created', serializer.data)
@@ -41,8 +42,8 @@ class PageModelViewSet(SubscribersMixin, viewsets.ModelViewSet):
         follower('page_updated', serializer.data)
         return Response(serializer.data)
 
-    def destroy(self, request, *args, **kwargs):
+    def destroy(self, request, pk=None):
         instance = self.get_object()
+        follower('page_deleted', pk)
         self.perform_destroy(instance)
-        follower('page_deleted', instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
