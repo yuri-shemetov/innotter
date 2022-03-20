@@ -1,4 +1,4 @@
-from fastapi import Header, APIRouter, HTTPException
+from fastapi import Header, APIRouter, HTTPException, Path
 from .models import CounterIn, CounterOut, CounterUpdate
 from api import db_manager
 
@@ -6,12 +6,12 @@ from api import db_manager
 counters = APIRouter()
 
 @counters.get('/{page}')
-async def read_counter(page: str):
+async def read_counter(page: str = Path(..., description='Search the page')):
     return db_manager.get_counter(page=page)
 
 @counters.post('/', status_code=201)
 async def add_counter(payload: CounterIn):
-    counter_id = await db_manager.add_counter(payload)
+    counter_id = db_manager.add_counter(payload)
     response = {
         'id': counter_id,
         'page': payload.page,
@@ -34,13 +34,6 @@ async def update_counter(id: str, payload: CounterUpdate):
         }
     }
     return response
-
-# @counters.put('/{id}')
-# async def update_movie(id: int, payload: CounterIn):
-#     counter = payload.dict()
-#     fake_counter_db[id] = counter
-#     return None
-
 
 @counters.delete('/{id}')
 async def delete_counter(id: str):

@@ -59,7 +59,7 @@ def get_count_follow_requests(obj):
 def get_count_subscribers(obj):
     """Get a count of users who subscribed on the `obj`.
     """
-    follower()
+    # follower()
     return User.objects.filter(subscribers__follower=obj).count()
 
 # ------------------------------------------------------>

@@ -175,13 +175,7 @@ EMAIL_HOST_PASSWORD = local_settings.SMTP_Password
 EMAIL_PORT = 587
 
 # RabbitMQ
-
-<<<<<<< HEAD
-CELERY_BROKER_URL = 'amqp://localhost:5672//'
-# CELERY_BROKER_TRANSPORT_OPTIONS = {'visibility_timeout':3600}
-=======
 CELERY_BROKER_URL = local_settings.CELERY_BROKER_URL
->>>>>>> 6b5f6e454b4fa8840fd8da4e8da5ad329506f2eb
 CELERY_RESULT_BACKEND = 'db+sqlite:///results.db'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'

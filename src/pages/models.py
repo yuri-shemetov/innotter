@@ -20,7 +20,7 @@ class Page(models.Model):
     tag = models.ForeignKey(
         'tags.Tag',
         on_delete=models.CASCADE,
-        related_name='pages'
+        related_name='tags'
     )
     image = models.FileField(
         max_length=30,
