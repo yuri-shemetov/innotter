@@ -1,12 +1,32 @@
 from api.db import table, database
 from botocore.exceptions import ClientError
 
+from microservice.producer import follower
+
+
+def get_everything_counter(dynamodb=None):
+    if not dynamodb:
+        dynamodb = database
+    response = table.scan(AttributesToGet=['page', 'counters'])
+    return response['Items']
+
 
 def get_counter(page, dynamodb=None):
     if not dynamodb:
         dynamodb = database
     try:
         response = table.get_item(Key={'page': page})
+    except ClientError as e:
+        print(e.response['Error']['Message'])
+    else:
+        return response['Item']
+
+def increase_counter(page, dynamodb=None):
+    if not dynamodb:
+        dynamodb = database
+    try:
+        response = table.get_item(Key={'page': page})
+        follower('page_subscribed', page)
     except ClientError as e:
         print(e.response['Error']['Message'])
     else:

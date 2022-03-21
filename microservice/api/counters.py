@@ -5,11 +5,29 @@ from api import db_manager
 
 counters = APIRouter()
 
-@counters.get('/{page}')
-async def read_counter(page: str = Path(..., description='Search the page')):
-    return db_manager.get_counter(page=page)
+@counters.get('/api/counters/')
+async def read_everything_counter():
+    return db_manager.get_everything_counter()
 
-@counters.post('/', status_code=201)
+@counters.get('/api/counters/{id}')
+async def read_counter(id: str = Path(..., description='Search the page')):
+    return db_manager.get_counter(page=id)
+
+
+
+
+
+
+@counters.post('/api/counters/{id}/followers')
+async def read_counter(id: str = Path(..., description='Search the page')):
+    return db_manager.increase_counter(page=id)
+
+
+
+
+
+
+@counters.post('/api/counters/', status_code=201)
 async def add_counter(payload: CounterIn):
     counter_id = db_manager.add_counter(
         payload.page, payload.count_follow_requests, payload.count_follower)
@@ -23,7 +41,7 @@ async def add_counter(payload: CounterIn):
     }
     return response
 
-@counters.put('/counters/{id}', status_code=201)
+@counters.put('/api/counters/{id}', status_code=201)
 async def update_counter(id: str, payload: CounterUpdate):
     counter_id = db_manager.update_counter(
         id, payload.count_follow_requests, payload.count_follower)
@@ -36,7 +54,7 @@ async def update_counter(id: str, payload: CounterUpdate):
     }
     return response
 
-@counters.delete('/{id}')
+@counters.delete('/api/counters/{id}')
 async def delete_counter(id: str):
     movie = db_manager.delete_counter(id)
     if not movie:
