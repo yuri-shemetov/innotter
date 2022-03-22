@@ -30,6 +30,8 @@ class Page(models.Model):
     is_private = models.BooleanField(
         default=False
     )
+    count_followers = models.IntegerField(default=0)
+    count_follow_requests = models.IntegerField(default=0)
     unblock_date = models.DateTimeField(
         null=True,
         blank=True

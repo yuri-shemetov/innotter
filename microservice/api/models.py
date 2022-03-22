@@ -8,10 +8,6 @@ class CounterIn(BaseModel):
     count_follow_requests: int
 
 
-class CounterOut(CounterIn):
-    id: int
-
-
 class CounterUpdate(CounterIn):
     page: Optional[str] = None
     count_follower: Optional[int] = None

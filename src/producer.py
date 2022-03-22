@@ -1,5 +1,5 @@
 import pika, json
-from api.local_settings import CELERY_BROKER_URL
+from proj.local_settings import CELERY_BROKER_URL
 
 params = pika.URLParameters(CELERY_BROKER_URL)
 
@@ -7,11 +7,11 @@ connection = pika.BlockingConnection(params)
 
 channel = connection.channel()
 
-def follower(method, body):
+def publish(method, body):
     properties = pika.BasicProperties(method)
     channel.basic_publish(
         exchange='',
-        routing_key='src',
+        routing_key='microservice',
         body=json.dumps(body),
         properties=properties
     )

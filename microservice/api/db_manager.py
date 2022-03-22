@@ -1,7 +1,6 @@
 from api.db import table, database
 from botocore.exceptions import ClientError
-
-from microservice.producer import follower
+from .models import CounterIn
 
 
 def get_everything_counter(dynamodb=None):
@@ -20,18 +19,6 @@ def get_counter(page, dynamodb=None):
         print(e.response['Error']['Message'])
     else:
         return response['Item']
-
-def increase_counter(page, dynamodb=None):
-    if not dynamodb:
-        dynamodb = database
-    try:
-        response = table.get_item(Key={'page': page})
-        follower('page_subscribed', page)
-    except ClientError as e:
-        print(e.response['Error']['Message'])
-    else:
-        return response['Item']
-
 
 def add_counter(page, count_follow_requests, count_follower, dynamodb=None):
     if not dynamodb:
@@ -77,3 +64,81 @@ def delete_counter(page, dynamodb=None):
             raise
     else:
         return response
+
+def increase_count_followers(page, dynamodb=None):
+    if not dynamodb:
+        dynamodb = database    
+    response = table.update_item(
+        Key={'page': page},
+        UpdateExpression="SET counters.count_follower = counters.count_follower + :num",
+        ExpressionAttributeValues={
+            ":num": 1
+        },
+        ReturnValues="UPDATED_NEW"
+    )
+    return response
+
+def increase_count_follow_requests(page, dynamodb=None):
+    if not dynamodb:
+        dynamodb = database    
+    response = table.update_item(
+        Key={'page': page},
+        UpdateExpression="SET counters.count_follow_requests = counters.count_follow_requests + :num",
+        ExpressionAttributeValues={
+            ":num": 1
+        },
+        ReturnValues="UPDATED_NEW"
+    )
+    return response
+
+def decrease_increase(page, dynamodb=None):
+    if not dynamodb:
+        dynamodb = database    
+    response = table.update_item(
+        Key={'page': page},
+        UpdateExpression="SET counters.count_follow_requests = counters.count_follow_requests - :num, counters.count_follower = counters.count_follower + :num",
+        ExpressionAttributeValues={
+            ":num": 1
+        },
+        ReturnValues="UPDATED_NEW"
+    )
+    return response
+
+def decrease_count_follow_requests(page, dynamodb=None):
+    if not dynamodb:
+        dynamodb = database    
+    response = table.update_item(
+        Key={'page': page},
+        UpdateExpression="SET counters.count_follow_requests = counters.count_follow_requests - :num",
+        ExpressionAttributeValues={
+            ":num": 1
+        },
+        ReturnValues="UPDATED_NEW"
+    )
+    return response
+
+def decrease_count_follower(page, dynamodb=None):
+    if not dynamodb:
+        dynamodb = database    
+    response = table.update_item(
+        Key={'page': page},
+        UpdateExpression="SET counters.count_follower = counters.count_follower - :num",
+        ExpressionAttributeValues={
+            ":num": 1
+        },
+        ReturnValues="UPDATED_NEW"
+    )
+    return response
+
+def delete_followers(page, dynamodb=None):
+    if not dynamodb:
+        dynamodb = database    
+    response = table.update_item(
+        Key={'page': page},
+        UpdateExpression="SET counters.count_follower = :num",
+        ExpressionAttributeValues={
+            ":num": 0
+        },
+        ReturnValues="UPDATED_NEW"
+    )
+    return response
