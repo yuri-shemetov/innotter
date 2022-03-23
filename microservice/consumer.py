@@ -1,13 +1,15 @@
-import pika, json
-from api import models, db_manager, local_settings
+import pika
+import json
+from api import db_manager, local_settings
 
-params = pika.URLParameters(local_settings.CELERY_BROKER_URL)
+params = pika.URLParameters(local_settings.BROKER_URL_FOR_DB)
 
 connection = pika.BlockingConnection(params)
 
 channel = connection.channel()
 
 channel.queue_declare(queue='microservice')
+
 
 def callback(ch, method, properties, body):
     print('Recived in microservice')
@@ -18,7 +20,7 @@ def callback(ch, method, properties, body):
         count_follower = data['count_followers']
         count_follow_requests = data['count_follow_requests']
         db_manager.add_counter(page, count_follow_requests, count_follower)
-    
+
     elif properties.content_type == 'page_updated':
         page = data['id']
         count_follower = data['count_followers']
@@ -46,7 +48,12 @@ def callback(ch, method, properties, body):
     elif properties.content_type == 'decrease_count_followers':
         db_manager.decrease_count_follower(data)
 
-channel.basic_consume(queue='microservice', on_message_callback=callback, auto_ack=True)
+
+channel.basic_consume(
+    queue='microservice',
+    on_message_callback=callback,
+    auto_ack=True
+    )
 
 print('Started consuming')
 

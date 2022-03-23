@@ -134,16 +134,13 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 AWS_ACCESS_KEY_ID = local_settings.AWS_ACCESS_KEY_ID
 AWS_SECRET_ACCESS_KEY = local_settings.AWS_SECRET_ACCESS_KEY
-AWS_STORAGE_BUCKET_NAME = 'my-trial-static'
-AWS_S3_OBJECT_PARAMETERS = {
-    'CacheControl': 'max-age=86400',
-}
-AWS_S3_SIGNATURE_VERSION = 's3v4'
-AWS_S3_REGION_NAME = 'eu-west-2'
-AWS_S3_MAX_MEMORY_SIZE = 8000000
-AWS_DEFAULT_ACL = None
-AWS_S3_VERIFY = True
-DEFAULT_FILE_STORAGE = 'proj.storage_backends.MediaStorage'
+AWS_STORAGE_BUCKET_NAME = local_settings.AWS_STORAGE_BUCKET_NAME
+AWS_S3_SIGNATURE_VERSION = local_settings.AWS_S3_SIGNATURE_VERSION
+AWS_S3_REGION_NAME = local_settings.AWS_REGION_NAME
+AWS_S3_MAX_MEMORY_SIZE = local_settings.AWS_S3_MAX_MEMORY_SIZE
+AWS_DEFAULT_ACL = local_settings.AWS_DEFAULT_ACL
+AWS_S3_VERIFY = local_settings.AWS_S3_VERIFY
+DEFAULT_FILE_STORAGE = local_settings.DEFAULT_FILE_STORAGE
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
@@ -167,16 +164,15 @@ REST_FRAMEWORK = {
 }
 
 # EMAIL: SES-SMTP-MY-TRIAL
-
-EMAIL_USE_TLS = True
-EMAIL_HOST = 'email-smtp.eu-west-2.amazonaws.com'
-EMAIL_HOST_USER = local_settings.SMTP_Username
-EMAIL_HOST_PASSWORD = local_settings.SMTP_Password
-EMAIL_PORT = 587
+EMAIL_USE_TLS = local_settings.EMAIL_USE_TLS
+EMAIL_HOST = local_settings.EMAIL_HOST
+EMAIL_HOST_USER = local_settings.EMAIL_HOST_USER
+EMAIL_HOST_PASSWORD = local_settings.EMAIL_HOST_PASSWORD
+EMAIL_PORT = local_settings.EMAIL_PORT
 
 # RabbitMQ
-CELERY_BROKER_URL = local_settings.CELERY_BROKER_URL
-CELERY_RESULT_BACKEND = 'db+sqlite:///results.db'
-CELERY_ACCEPT_CONTENT = ['application/json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
+CELERY_BROKER_URL = local_settings.BROKER_URL
+CELERY_RESULT_BACKEND = local_settings.RESULT_BACKEND
+CELERY_ACCEPT_CONTENT = local_settings.ACCEPT_CONTENT
+CELERY_TASK_SERIALIZER = local_settings.TASK_SERIALIZER
+CELERY_RESULT_SERIALIZER = local_settings.RESULT_SERIALIZER

@@ -1,7 +1,7 @@
 import boto3
 from . import local_settings
 
-# Get the service resource.
+
 database = boto3.resource(
     'dynamodb',
     region_name='us-east-1',
@@ -31,13 +31,5 @@ def create_table():
         }
     )
 
+
 table = database.Table('info_page')
-# table.put_item(
-#    Item={
-#         'page': 'my_page',
-#         'counters': {
-#             'count_follower': 1,
-#             'count_follow_requests': 0
-#         }
-#     }
-# )

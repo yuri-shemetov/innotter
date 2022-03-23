@@ -1,16 +1,14 @@
 from __future__ import absolute_import, unicode_literals
-from django.core.mail import send_mail
+from django.core.mail import send_mass_mail
 from proj.celery import app
 
 
 @app.task
 def send_new_post_email(users_email, name_page):
-    
-    for user_email in users_email:
-        send_mail(
-            'New post for the page.',
-            f'The post have been create for the page "{name_page}".',
-            'yuri7shemetov@gmail.com',
-            [user_email],
-            fail_silently=False
-        )
+    send_mass_mail(
+        'New post for the page.',
+        f'The post have been create for the page "{name_page}".',
+        'yuri7shemetov@gmail.com',
+        users_email,
+        fail_silently=False
+    )

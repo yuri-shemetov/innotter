@@ -9,6 +9,7 @@ from producer import publish
 from proj.local_settings import MICROSERVICE
 import requests
 
+
 class PageModelViewSet(SubscribersMixin, viewsets.ModelViewSet):
     """Allowed Pages for everybody categories"""
     serializer_class = PageSerializer
@@ -41,7 +42,7 @@ class PageModelViewSet(SubscribersMixin, viewsets.ModelViewSet):
         headers = self.get_success_headers(serializer.data)
         publish('page_created', serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-    
+
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
         instance = self.get_object()

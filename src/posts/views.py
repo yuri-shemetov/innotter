@@ -29,19 +29,18 @@ class PostModelViewSet(LikedMixin, viewsets.ModelViewSet):
             return Post.objects.filter(
                 page__in=permissions_pages | owner_pages
             ).order_by('-updated_at')
-        
+
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         # send the list emails
-        pk = request.data["page"]
-        page = Page.objects.get(id=pk)
+        page = serializer.validated_data['page']
         if request.user.is_authenticated:
             subscribers = Subscriber.objects.filter(follower=page)
-            users_email = [user_subscriber.subscriber.email for user_subscriber in subscribers]
-        send_new_post_email.delay(users_email, page.name) #CELERY
+            users_email = list(map(lambda n: n.subscriber.email, subscribers))
+            send_new_post_email.delay(users_email, page.name)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 

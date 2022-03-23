@@ -39,12 +39,14 @@ def confirm_subscription_everybody(obj, user):
 def remove_subscription(obj, user):
     """Removed 'subscription' on the `obj`.
     """
-    if user.is_authenticated and Page.objects.filter(owner=user).exists():
+    if user.is_authenticated and Page.objects.filter(id=obj.id, owner=user).exists():
         Subscriber.objects.filter(follower=obj).delete()
         publish('page_delete_subscribers', str(obj.id))
     elif user.is_authenticated:
-        Subscriber.objects.filter(subscriber=user, follower=obj).delete()
-        publish('decrease_count_followers', str(obj.id))
+        if Subscriber.objects.filter(subscriber=user, follower=obj).exists():
+            Subscriber.objects.filter(subscriber=user, follower=obj).delete()
+            publish('decrease_count_followers', str(obj.id))
+
 
 def get_follow_requests(obj):
     """Get a list of users who requested subscribtion on the `obj`.

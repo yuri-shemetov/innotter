@@ -1,11 +1,12 @@
 import pika, json
-from proj.local_settings import CELERY_BROKER_URL
+from proj.local_settings import BROKER_URL_FOR_DB
 
-params = pika.URLParameters(CELERY_BROKER_URL)
+params = pika.URLParameters(BROKER_URL_FOR_DB)
 
 connection = pika.BlockingConnection(params)
 
 channel = connection.channel()
+
 
 def publish(method, body):
     properties = pika.BasicProperties(method)

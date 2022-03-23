@@ -1,6 +1,5 @@
 from api.db import table, database
 from botocore.exceptions import ClientError
-from .models import CounterIn
 
 
 def get_everything_counter(dynamodb=None):
@@ -20,6 +19,7 @@ def get_counter(page, dynamodb=None):
     else:
         return response['Item']
 
+
 def add_counter(page, count_follow_requests, count_follower, dynamodb=None):
     if not dynamodb:
         dynamodb = database
@@ -37,7 +37,7 @@ def add_counter(page, count_follow_requests, count_follower, dynamodb=None):
 
 def update_counter(page, count_follow_requests, count_follower, dynamodb=None):
     if not dynamodb:
-        dynamodb = database    
+        dynamodb = database
     response = table.update_item(
         Key={'page': page},
         UpdateExpression="set counters.count_follower=:f, counters.count_follow_requests=:r",
@@ -65,9 +65,10 @@ def delete_counter(page, dynamodb=None):
     else:
         return response
 
+
 def increase_count_followers(page, dynamodb=None):
     if not dynamodb:
-        dynamodb = database    
+        dynamodb = database
     response = table.update_item(
         Key={'page': page},
         UpdateExpression="SET counters.count_follower = counters.count_follower + :num",
@@ -78,9 +79,10 @@ def increase_count_followers(page, dynamodb=None):
     )
     return response
 
+
 def increase_count_follow_requests(page, dynamodb=None):
     if not dynamodb:
-        dynamodb = database    
+        dynamodb = database
     response = table.update_item(
         Key={'page': page},
         UpdateExpression="SET counters.count_follow_requests = counters.count_follow_requests + :num",
@@ -91,9 +93,10 @@ def increase_count_follow_requests(page, dynamodb=None):
     )
     return response
 
+
 def decrease_increase(page, dynamodb=None):
     if not dynamodb:
-        dynamodb = database    
+        dynamodb = database
     response = table.update_item(
         Key={'page': page},
         UpdateExpression="SET counters.count_follow_requests = counters.count_follow_requests - :num, counters.count_follower = counters.count_follower + :num",
@@ -104,9 +107,10 @@ def decrease_increase(page, dynamodb=None):
     )
     return response
 
+
 def decrease_count_follow_requests(page, dynamodb=None):
     if not dynamodb:
-        dynamodb = database    
+        dynamodb = database
     response = table.update_item(
         Key={'page': page},
         UpdateExpression="SET counters.count_follow_requests = counters.count_follow_requests - :num",
@@ -117,9 +121,10 @@ def decrease_count_follow_requests(page, dynamodb=None):
     )
     return response
 
+
 def decrease_count_follower(page, dynamodb=None):
     if not dynamodb:
-        dynamodb = database    
+        dynamodb = database
     response = table.update_item(
         Key={'page': page},
         UpdateExpression="SET counters.count_follower = counters.count_follower - :num",
@@ -130,9 +135,10 @@ def decrease_count_follower(page, dynamodb=None):
     )
     return response
 
+
 def delete_followers(page, dynamodb=None):
     if not dynamodb:
-        dynamodb = database    
+        dynamodb = database
     response = table.update_item(
         Key={'page': page},
         UpdateExpression="SET counters.count_follower = :num",
