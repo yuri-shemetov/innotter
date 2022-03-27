@@ -1,6 +1,7 @@
-version: '4.5'
+version: '3.9'
 
 services:
+
   innotter_db:
     image: postgres:latest
     environment:
@@ -11,6 +12,7 @@ services:
       - postgres_data:/var/lib/postgresql/data/
     ports:
       - 5672:5672
+
   django:
     container_name: innotter_django
     build:
@@ -24,11 +26,13 @@ services:
       - 8000:8000
     depends_on:
       - innotter_db
+      - fastapi
+
   celery:
     restart: always
     build:
       context: ./
-    command: bash -c  "celery -A proj worker -l info -P gevent"
+    command: bash -c  "cd src && celery -A proj worker -l info -P gevent"
     volumes:
       - .:/src
     environment:
@@ -39,5 +43,22 @@ services:
       - innotter_db
       - django
 
+  fastapi:
+    container_name: innotter_fastapi
+    build:
+      context: ./
+    command:  bash -c "cd microservice && uvicorn main:app --host 0.0.0.0 --port 8001"
+    volumes:
+      - .:/microservice
+    ports:
+      - 8001:8001
+
+  consumer:
+    container_name: innotter_consumer
+    build:
+      context: ./
+    command:  bash -c "cd microservice && python consumer.py"
+    volumes:
+      - .:/microservice 
 volumes:
   postgres_data:

@@ -17,5 +17,4 @@ RUN pip install -r requirements.txt
 
 # copy project
 COPY src/ ./src
-
-EXPOSE 8000
+COPY microservice/ ./microservice
