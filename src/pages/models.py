@@ -20,7 +20,7 @@ class Page(models.Model):
     tag = models.ForeignKey(
         'tags.Tag',
         on_delete=models.CASCADE,
-        related_name='pages'
+        related_name='tags'
     )
     image = models.FileField(
         max_length=30,
@@ -30,6 +30,8 @@ class Page(models.Model):
     is_private = models.BooleanField(
         default=False
     )
+    count_followers = models.IntegerField(default=0)
+    count_follow_requests = models.IntegerField(default=0)
     unblock_date = models.DateTimeField(
         null=True,
         blank=True

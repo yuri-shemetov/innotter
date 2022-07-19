@@ -6,6 +6,9 @@ from pages.models import Page
 from likes.models import Like
 from subscribers.models import Subscriber
 from likes.mixins import LikedMixin
+from .tasks import send_new_post_email
+from rest_framework.response import Response
+from rest_framework import status
 
 
 class PostModelViewSet(LikedMixin, viewsets.ModelViewSet):
@@ -26,6 +29,19 @@ class PostModelViewSet(LikedMixin, viewsets.ModelViewSet):
             return Post.objects.filter(
                 page__in=permissions_pages | owner_pages
             ).order_by('-updated_at')
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        # send the list emails
+        page = serializer.validated_data['page']
+        if request.user.is_authenticated:
+            subscribers = Subscriber.objects.filter(follower=page)
+            users_email = list(map(lambda n: n.subscriber.email, subscribers))
+            send_new_post_email.delay(users_email, page.name)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
 class PostLikeModelViewSet(viewsets.ModelViewSet):

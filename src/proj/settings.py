@@ -83,13 +83,7 @@ WSGI_APPLICATION = 'proj.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
+DATABASES = local_settings.DATABASES
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -134,16 +128,13 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 AWS_ACCESS_KEY_ID = local_settings.AWS_ACCESS_KEY_ID
 AWS_SECRET_ACCESS_KEY = local_settings.AWS_SECRET_ACCESS_KEY
-AWS_STORAGE_BUCKET_NAME = 'my-trial-static'
-AWS_S3_OBJECT_PARAMETERS = {
-    'CacheControl': 'max-age=86400',
-}
-AWS_S3_SIGNATURE_VERSION = 's3v4'
-AWS_S3_REGION_NAME = 'eu-west-2'
-AWS_S3_MAX_MEMORY_SIZE = 8000000
-AWS_DEFAULT_ACL = None
-AWS_S3_VERIFY = True
-DEFAULT_FILE_STORAGE = 'proj.storage_backends.MediaStorage'
+AWS_STORAGE_BUCKET_NAME = local_settings.AWS_STORAGE_BUCKET_NAME
+AWS_S3_SIGNATURE_VERSION = local_settings.AWS_S3_SIGNATURE_VERSION
+AWS_S3_REGION_NAME = local_settings.AWS_REGION_NAME
+AWS_S3_MAX_MEMORY_SIZE = local_settings.AWS_S3_MAX_MEMORY_SIZE
+AWS_DEFAULT_ACL = local_settings.AWS_DEFAULT_ACL
+AWS_S3_VERIFY = local_settings.AWS_S3_VERIFY
+DEFAULT_FILE_STORAGE = local_settings.DEFAULT_FILE_STORAGE
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
@@ -165,3 +156,17 @@ REST_FRAMEWORK = {
     'NON_FIELD_ERRORS_KEY': 'error',
     'TEST_REQUEST_DEFAULT_FORMAT': 'json',
 }
+
+# EMAIL: SES-SMTP-MY-TRIAL
+EMAIL_USE_TLS = local_settings.EMAIL_USE_TLS
+EMAIL_HOST = local_settings.EMAIL_HOST
+EMAIL_HOST_USER = local_settings.EMAIL_HOST_USER
+EMAIL_HOST_PASSWORD = local_settings.EMAIL_HOST_PASSWORD
+EMAIL_PORT = local_settings.EMAIL_PORT
+
+# RabbitMQ
+CELERY_BROKER_URL = local_settings.BROKER_URL
+CELERY_RESULT_BACKEND = local_settings.RESULT_BACKEND
+CELERY_ACCEPT_CONTENT = local_settings.ACCEPT_CONTENT
+CELERY_TASK_SERIALIZER = local_settings.TASK_SERIALIZER
+CELERY_RESULT_SERIALIZER = local_settings.RESULT_SERIALIZER
