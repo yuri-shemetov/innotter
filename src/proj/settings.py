@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 from . import local_settings
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -38,6 +39,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'storages',
+    'users',
+    'pages',
+    'tags',
+    'posts',
+    'likes',
+    'subscribers',
 ]
 
 MIDDLEWARE = [
@@ -50,7 +59,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'proj.urls'
+ROOT_URLCONF = 'proj.urls.base'
 
 TEMPLATES = [
     {
@@ -74,13 +83,7 @@ WSGI_APPLICATION = 'proj.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
+DATABASES = local_settings.DATABASES
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -119,8 +122,51 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+AWS_ACCESS_KEY_ID = local_settings.AWS_ACCESS_KEY_ID
+AWS_SECRET_ACCESS_KEY = local_settings.AWS_SECRET_ACCESS_KEY
+AWS_STORAGE_BUCKET_NAME = local_settings.AWS_STORAGE_BUCKET_NAME
+AWS_S3_SIGNATURE_VERSION = local_settings.AWS_S3_SIGNATURE_VERSION
+AWS_S3_REGION_NAME = local_settings.AWS_REGION_NAME
+AWS_S3_MAX_MEMORY_SIZE = local_settings.AWS_S3_MAX_MEMORY_SIZE
+AWS_DEFAULT_ACL = local_settings.AWS_DEFAULT_ACL
+AWS_S3_VERIFY = local_settings.AWS_S3_VERIFY
+DEFAULT_FILE_STORAGE = local_settings.DEFAULT_FILE_STORAGE
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTH_USER_MODEL = 'users.User'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'users.backends.JWTAuthentication',
+        ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAdminUser',
+        'rest_framework.permissions.AllowAny',
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'EXCEPTION_HANDLER': 'proj.exceptions.core_exception_handler',
+    'NON_FIELD_ERRORS_KEY': 'error',
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json',
+}
+
+# EMAIL: SES-SMTP-MY-TRIAL
+EMAIL_USE_TLS = local_settings.EMAIL_USE_TLS
+EMAIL_HOST = local_settings.EMAIL_HOST
+EMAIL_HOST_USER = local_settings.EMAIL_HOST_USER
+EMAIL_HOST_PASSWORD = local_settings.EMAIL_HOST_PASSWORD
+EMAIL_PORT = local_settings.EMAIL_PORT
+
+# RabbitMQ
+CELERY_BROKER_URL = local_settings.BROKER_URL
+CELERY_RESULT_BACKEND = local_settings.RESULT_BACKEND
+CELERY_ACCEPT_CONTENT = local_settings.ACCEPT_CONTENT
+CELERY_TASK_SERIALIZER = local_settings.TASK_SERIALIZER
+CELERY_RESULT_SERIALIZER = local_settings.RESULT_SERIALIZER
